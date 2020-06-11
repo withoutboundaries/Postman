@@ -1,0 +1,99 @@
+{
+	"info": {
+		"_postman_id": "bd0260e1-6587-4b22-a36a-7d2a9804f2cd",
+		"name": "WeatherTest",
+		"description": "Simple colllection with 2 requests to get weather from sinoptik.ua by City",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "search City id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "137c6748-68e9-4758-ab8a-dfdec165fc62",
+						"exec": [
+							"//var pattern=/([0-9]{1,})$/;",
+							"//var cityId=pm.response.text().match(pattern);",
+							"//pm.environment.set(\"cityId\", cityId);",
+							"",
+							"var cityId= responseBody.substring(responseBody.lastIndexOf('|') + 1);",
+							"pm.environment.set(\"cityId\", cityId);",
+							"",
+							"pm.environment.set(\"cityId\", cityId);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://pinformer.sinoptik.ua/search.php?lang=ua&return_id=1&q=lviv",
+					"protocol": "https",
+					"host": [
+						"pinformer",
+						"sinoptik",
+						"ua"
+					],
+					"path": [
+						"search.php"
+					],
+					"query": [
+						{
+							"key": "lang",
+							"value": "ua"
+						},
+						{
+							"key": "return_id",
+							"value": "1"
+						},
+						{
+							"key": "q",
+							"value": "lviv"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get weather by City id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://pinformer.sinoptik.ua/pinformer4.php?type=js&lang=ua&id={{cityId}}",
+					"protocol": "https",
+					"host": [
+						"pinformer",
+						"sinoptik",
+						"ua"
+					],
+					"path": [
+						"pinformer4.php"
+					],
+					"query": [
+						{
+							"key": "type",
+							"value": "js"
+						},
+						{
+							"key": "lang",
+							"value": "ua"
+						},
+						{
+							"key": "id",
+							"value": "{{cityId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

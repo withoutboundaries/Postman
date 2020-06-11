@@ -1,0 +1,101 @@
+{
+	"info": {
+		"_postman_id": "825823ad-d789-40e5-8284-0aec4d5be4d6",
+		"name": "FindNamesDroidSpecies",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Droid species list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4170e29d-987d-40d6-b625-386a0690588d",
+						"exec": [
+							" pm.test(\"Status code is 200\", function () {",
+							"pm.response.to.have.status(200);",
+							"});",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"console.log(typeof jsonData);",
+							"console.log(jsonData.results[0].people);",
+							"",
+							"",
+							"var people = jsonData.results[0].people;",
+							"var arrayLength = people.length;",
+							"for (var i = 0; i < arrayLength; i++) {",
+							"    pm.sendRequest(people [i], function (err, res) {",
+							"    if (err) {",
+							"        console.log(err);",
+							"    } else {",
+							"        console.log(res.json().name);",
+							"    }",
+							"});",
+							"    ",
+							"}",
+							"",
+							"/*",
+							"// example with a plain string URL",
+							"pm.sendRequest(\"https://swapi.co/api/people/2/\", function (err, res) {",
+							"    if (err) {",
+							"        console.log(err);",
+							"    } else {",
+							"        console.log(res.json().name);",
+							"    }",
+							"});",
+							"",
+							"",
+							"*/",
+							"",
+							"",
+							"",
+							"/*pm.test(\"Your test name\", function () {",
+							"    var name = pm.response.json();",
+							"    pm.expect(name.value).to.eql(\"C-3PO\");",
+							"});",
+							"*/",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "05791fc7-8bd9-4013-85af-6efdca33f81f",
+						"exec": [
+							"pm.environment.set(\"speciesName\", \"Droid\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://swapi.co/api/species/?search={{speciesName}}",
+					"protocol": "https",
+					"host": [
+						"swapi",
+						"co"
+					],
+					"path": [
+						"api",
+						"species",
+						""
+					],
+					"query": [
+						{
+							"key": "search",
+							"value": "{{speciesName}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

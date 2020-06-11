@@ -1,0 +1,166 @@
+{
+	"info": {
+		"_postman_id": "c62c9a41-bae5-4d76-9e9a-9a21b8611a9b",
+		"name": "swapi november copy",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Scenario2",
+			"item": [
+				{
+					"name": "https://swapi.co/api/species/?search={{specieName}}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b7f0f35c-55d3-46cb-a32d-1c553173c1d8",
+								"exec": [
+									"//Check that Response code is 200",
+									"pm.test(\"Verify Response Status Code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"//Check that Response body has valid data",
+									"pm.test(\"Verify Response body has valid data\", function () { ",
+									"    pm.response.to.not.be.error; ",
+									"    pm.response.to.have.jsonBody(\"count\");",
+									"    pm.response.to.have.jsonBody(\"results\"); ",
+									"});",
+									"",
+									"//Set 'speciePeopleUrlList' environment variable based on value from Response",
+									"var jsonData = JSON.parse(responseBody);",
+									"var speciePeopleUrlList = jsonData.results[0].people;",
+									"postman.setEnvironmentVariable(\"speciePeopleUrlList\", JSON.stringify(speciePeopleUrlList));",
+									"console.log(\"speciePeopleUrlList: \" + speciePeopleUrlList); "
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "44308d62-1aa3-4983-96e8-6260723f1d5d",
+								"exec": [
+									"var specieName = \"Droid\"",
+									"pm.environment.set(\"specieName\", specieName);",
+									"console.log(\"specieName: \" + specieName); "
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://swapi.co/api/species/?search={{specieName}}",
+							"protocol": "https",
+							"host": [
+								"swapi",
+								"co"
+							],
+							"path": [
+								"api",
+								"species",
+								""
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "{{specieName}}"
+								}
+							]
+						},
+						"description": "Search for specific specie Name"
+					},
+					"response": []
+				},
+				{
+					"name": "{{speciePeopleUrl}}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "34e75324-66c4-49b7-92db-1546a52bb3ef",
+								"exec": [
+									"//Check that Response code is 200",
+									"pm.test(\"Verify Response Status Code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// retrieve the speciePeopleUrlList from the environment",
+									"// and parse it into a typed object",
+									"var speciePeopleUrlList = JSON.parse(environment.speciePeopleUrlList);",
+									"",
+									"var nameList = environment.nameList;",
+									"if( !nameList) {",
+									"    var nameList = [];",
+									"    postman.setEnvironmentVariable(\"nameList\", JSON.stringify(nameList));",
+									"}",
+									"  ",
+									"var nameList = JSON.parse(environment.nameList);",
+									"var jsonData = JSON.parse(responseBody);",
+									"var name = jsonData.name;",
+									"nameList.push(name); // append name to list",
+									"postman.setEnvironmentVariable(\"nameList\", JSON.stringify(nameList));",
+									"",
+									"var speciePeopleUrlList = JSON.parse(environment.speciePeopleUrlList);",
+									"if (speciePeopleUrlList.length > 0) {",
+									"    postman.setNextRequest(\"{{speciePeopleUrl}}\");",
+									"}",
+									"else {",
+									"    // no more Urls to loop over, clean up ou",
+									"    // environment variables and resume test flow",
+									"    console.log('nameList: ' + JSON.parse(environment.nameList));",
+									"    postman.clearEnvironmentVariable(\"speciePeopleUrl\");",
+									"    postman.clearEnvironmentVariable(\"speciePeopleUrlList\");",
+									"}",
+									"",
+									"//postman.setNextRequest(\"{{speciePeopleUrl}}\");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "4ad69a9f-0368-47a3-8a92-617e300e4852",
+								"exec": [
+									"// retrieve the speciePeopleUrlList from the environment",
+									"// and parse it into a typed object",
+									"var speciePeopleUrlList = JSON.parse(environment.speciePeopleUrlList);",
+									"",
+									"// check if there are still Urls to loop through",
+									"if (speciePeopleUrlList.length > 0) {",
+									"  // remove the first element from the speciePeopleUrlList",
+									"  // and set it to the speciePeopleUrl environment variable",
+									"  postman.setEnvironmentVariable(\"speciePeopleUrl\", speciePeopleUrlList.shift());",
+									"  // convert speciePeopleUrlList to a string and store as an environment variable",
+									"  postman.setEnvironmentVariable(\"speciePeopleUrlList\", JSON.stringify(speciePeopleUrlList));",
+									"  //postman.setNextRequest(\"{{speciePeopleUrl}}\");",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{speciePeopleUrl}}",
+							"host": [
+								"{{speciePeopleUrl}}"
+							]
+						},
+						"description": "Get all person Names for spefic specie Name"
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": []
+		}
+	],
+	"protocolProfileBehavior": []
+}

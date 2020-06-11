@@ -1,0 +1,134 @@
+{
+	"info": {
+		"_postman_id": "032ee421-0d7d-4ef5-bd86-c5dcf0d29d17",
+		"name": "swapi planet search",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get HomeWorld by people name",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "6068866f-fb00-46b9-80ca-7f1c333deb25",
+						"exec": [
+							"pm.environment.set(\"peopleName\", \"R2-D2\");",
+							"console.log(\"peopleName: \" + pm.environment.get(\"peopleName\")); "
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "79d5665e-453b-4083-9528-921d9a71495b",
+						"exec": [
+							"//Check that Response code is 200",
+							"pm.test(\"Verify Response Status Code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"//Check that Response body has valid data",
+							"pm.test(\"Verify Response body has valid data\", function () { ",
+							"    pm.response.to.have.jsonBody(\"count\");",
+							"    pm.response.to.have.jsonBody(\"results\"); ",
+							"});",
+							"",
+							"//Set 'homeworld' environment variable based on value from Response",
+							"var jsonData = JSON.parse(responseBody);",
+							"var homeworld = jsonData.results[0].homeworld;",
+							"postman.setEnvironmentVariable(\"homeworld\", JSON.stringify(homeworld));",
+							"console.log(\"homeworld: \" + homeworld); ",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://swapi.co/api/people/?search={{peopleName}}",
+					"protocol": "https",
+					"host": [
+						"swapi",
+						"co"
+					],
+					"path": [
+						"api",
+						"people",
+						""
+					],
+					"query": [
+						{
+							"key": "search",
+							"value": "{{peopleName}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get PlanetName by HomeWorld",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "e4be57d0-2d42-4a0c-8e59-7f3a2e2a3ba0",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "8963c967-85db-4dc5-8ed5-7468d867a27c",
+						"exec": [
+							"//Check that Response code is 200",
+							"pm.test(\"Verify Response Status Code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"//Check that Response body has valid data",
+							"pm.test(\"Verify Response body has valid data\", function () { ",
+							"    pm.response.to.not.be.error; ",
+							"    pm.response.to.have.jsonBody(\"name\");",
+							"    pm.response.to.have.jsonBody(\"residents\"); ",
+							"});",
+							"",
+							"//Set 'name' environment variable based on value from Response",
+							"var jsonData = JSON.parse(responseBody);",
+							"var name = jsonData.name;",
+							"postman.setEnvironmentVariable(\"name\", JSON.stringify(name));",
+							"console.log(\"name: \" + name); ",
+							"",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{homeworld}}",
+					"host": [
+						"{{homeworld}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

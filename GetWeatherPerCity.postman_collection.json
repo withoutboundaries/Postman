@@ -1,0 +1,122 @@
+{
+	"info": {
+		"_postman_id": "5e67b0cd-24d1-4aa1-b075-dab279e0b294",
+		"name": "GetWeatherPerCity",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get city id",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "e569c9fa-8887-4106-baf4-ab26cecaa3f7",
+						"exec": [
+							"pm.environment.set(\"cityName\", \"Lviv\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "27804045-2e35-40d4-8eef-3824eeb35cb1",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"var cityId= responseBody.substring(responseBody.lastIndexOf('|') + 1);",
+							"pm.environment.set(\"cityId\", cityId);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://pinformer.sinoptik.ua/search.php?lang=ua&return_id=1&q={{cityName}}",
+					"protocol": "https",
+					"host": [
+						"pinformer",
+						"sinoptik",
+						"ua"
+					],
+					"path": [
+						"search.php"
+					],
+					"query": [
+						{
+							"key": "lang",
+							"value": "ua"
+						},
+						{
+							"key": "return_id",
+							"value": "1"
+						},
+						{
+							"key": "q",
+							"value": "{{cityName}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get weather by city id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "142af08c-8b68-41f1-976b-e0feade6b762",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Body matches string\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"303014487\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://pinformer.sinoptik.ua/pinformer4.php?type=js&lang=ua&id={{cityId}}",
+					"protocol": "https",
+					"host": [
+						"pinformer",
+						"sinoptik",
+						"ua"
+					],
+					"path": [
+						"pinformer4.php"
+					],
+					"query": [
+						{
+							"key": "type",
+							"value": "js"
+						},
+						{
+							"key": "lang",
+							"value": "ua"
+						},
+						{
+							"key": "id",
+							"value": "{{cityId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
